@@ -1,0 +1,75 @@
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using HarmonyLib;
+using UnityEngine;
+
+namespace WheelOfWuck
+{
+    public static class MyPluginInfo
+    {
+        public const string PLUGIN_GUID = "senkodev.whiteknuckle.wheelofwuck";
+        public const string PLUGIN_NAME = "WheelOfWuck";
+        public const string PLUGIN_VERSION = "1.0.0";
+    }
+
+    public enum HudCorner
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
+
+    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+    public class Plugin : BaseUnityPlugin
+    {
+        internal static new ManualLogSource Logger;
+        public static Plugin Instance;
+
+        private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
+
+        public static ConfigEntry<KeyCode> HudKey;
+        public static ConfigEntry<bool> ShowHud;
+        public static ConfigEntry<HudCorner> HudPosition;
+        public static ConfigEntry<float> HudScale;
+        public static ConfigEntry<float> TickVolume;
+        public static ConfigEntry<bool> RestartOnSkip;
+        public static ConfigEntry<KeyCode> ChimneyStayKey;
+        public static ConfigEntry<KeyCode> ChimneyGoKey;
+
+        private void Awake()
+        {
+            Logger = base.Logger; Instance = this;
+
+            HudKey = Config.Bind("General", "HudKey", KeyCode.F8, "Shows or hides the panel during a wheel run.");
+            ShowHud = Config.Bind("General", "ShowHud", true, "Show the wheel results during the run.");
+            HudPosition = Config.Bind("General", "HudPosition", HudCorner.TopRight, "Corner of the screen for the results.");
+            HudScale = Config.Bind("General", "HudScale", 0.75f,
+                new ConfigDescription("Size of the results panel.", new AcceptableValueRange<float>(0.5f, 1f)));
+            TickVolume = Config.Bind("General", "TickVolume", 0.6f,
+                new ConfigDescription("Volume of the ticking when the wheel spins.", new AcceptableValueRange<float>(0f, 1f)));
+            ChimneyStayKey = Config.Bind("General", "ChimneyStayKey", KeyCode.F3, "After a loop of the Chimney: keep climbing.");
+            ChimneyGoKey = Config.Bind("General", "ChimneyGoKey", KeyCode.F6, "After a loop of the Chimney: end the run so the score counts, then Restart goes to the campaign run.");
+            RestartOnSkip = Config.Bind("General.Toggles", "RestartOnSkip", true,
+                "Restart the run as soon as a shortcut the wheel picked can't be reached any more.");
+
+            WheelSet.Load();
+            WheelPicks.Load();
+            Roll.Load();
+
+            harmony.PatchAll();
+
+            GameObject go = null;
+            go = new GameObject("WheelOfWuck");
+            if (go != null)
+            {
+                go.hideFlags = HideFlags.HideAndDontSave;
+                DontDestroyOnLoad(go);
+                go.AddComponent<RunHud>();
+            }
+
+            Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        }
+    }
+}

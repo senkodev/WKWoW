@@ -1,0 +1,7 @@
+bin/
+obj/
+.vs/
+*.user
+LocalPaths.props
+dist/
+dev/

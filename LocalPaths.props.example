@@ -1,0 +1,10 @@
+<!-- copy to LocalPaths.props and adjust if your install differs from the defaults in src/WheelOfWuck.csproj -->
+<Project>
+  <PropertyGroup>
+    <GameDir>F:\SteamLibrary\steamapps\common\White Knuckle</GameDir>
+    <!-- the BepInEx folder of the profile you play with (r2modman / manual install) -->
+    <BepInExDir>$(AppData)\r2modmanPlus-local\WhiteKnuckle\profiles\1\BepInEx</BepInExDir>
+    <!-- set to false to build without copying the dll into the profile -->
+    <Deploy>true</Deploy>
+  </PropertyGroup>
+</Project>

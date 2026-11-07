@@ -1,0 +1,9 @@
+{
+  "name": "WheelOfWuck",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/senkodev/WKWoW",
+  "description": "Are you a gambler? If yes, this mod is definitely for you! Decide your run's fate with the mighty Wheel of Wuck!",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2305"
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "title": "Wheel of Wuck",
+  "colors": [
+    "#3369E8",
+    "#D50F25",
+    "#EEB211",
+    "#009925"
+  ],
+  "clearSettings": [
+    "ironknuckle",
+    "competitive"
+  ],
+  "wheels": [
+    {
+      "id": "difficulty",
+      "title": "Difficulty",
+      "spins": "1",
+      "unique": true,
+      "entries": [
+        {
+          "text": "Hard Mode",
+          "weight": 1.0,
+          "enabled": true,
+          "settings": {
+            "hardmode": true
+          }
+        },
+        {
+          "text": "Normal",
+          "weight": 1.0,
+          "enabled": true,
+          "settings": {
+            "hardmode": false
+          }
+        },
+        {
+          "text": "Hard Mode (Hot Zone)",
+          "weight": 1.0,
+          "enabled": true,
+          "settings": {
+            "hardmode": true
+          },
+          "route": [
+            "hotzone"
+          ]
+        },
+        {
+          "text": "Normal (Hot Zone)",
+          "weight": 1.0,
+          "enabled": true,
+          "settings": {
+            "hardmode": false
+          },
+          "route": [
+            "hotzone"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "route",
+      "title": "Route",
+      "spins": "1",
+      "unique": true,
+      "entries": [
+        {
+          "text": "Normal Route",
+          "weight": 8.0,
+          "enabled": true,
+          "route": []
+        },
+        {
+          "text": "Sink",
+          "weight": 1.06,
+          "enabled": true,
+          "route": [
+            "sink"
+          ]
+        },
+        {
+          "text": "Chute",
+          "weight": 1.06,
+          "enabled": true,
+          "route": [
+            "chute"
+          ]
+        },
+        {
+          "text": "Ladder",
+          "weight": 0.56,
+          "enabled": true,
+          "route": [
+            "ladder"
+          ]
+        },
+        {
+          "text": "Duct",
+          "weight": 1.0,
+          "enabled": true,
+          "route": [
+            "duct"
+          ]
+        },
+        {
+          "text": "Diver",
+          "weight": 1.0,
+          "enabled": true,
+          "route": [
+            "diver"
+          ]
+        },
+        {
+          "text": "Sink > Duct",
+          "weight": 1.0,
+          "enabled": true,
+          "route": [
+            "sink",
+            "duct"
+          ]
+        },
+        {
+          "text": "Chute > Diver",
+          "weight": 1.0,
+          "enabled": true,
+          "route": [
+            "chute",
+            "diver"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bindingCount",
+      "title": "How many bindings?",
+      "spins": "1",
+      "unique": true,
+      "entries": [
+        {
+          "text": "No bindings",
+          "weight": 1.0,
+          "enabled": false,
+          "count": 0
+        },
+        {
+          "text": "1 binding",
+          "weight": 1.0,
+          "enabled": true,
+          "count": 1
+        },
+        {
+          "text": "2 bindings",
+          "weight": 1.0,
+          "enabled": true,
+          "count": 2
+        },
+        {
+          "text": "3 bindings",
+          "weight": 1.0,
+          "enabled": true,
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "bindings",
+      "title": "Binding",
+      "spins": "bindingCount",
+      "unique": true,
+      "entries": [
+        {
+          "text": "Half Inventory",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_HalfInventory"
+        },
+        {
+          "text": "High Gravity",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_HighGravity"
+        },
+        {
+          "text": "Hunted",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_Hunted"
+        },
+        {
+          "text": "No Perks",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_NoPerks"
+        },
+        {
+          "text": "No Shops",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_NoShops"
+        },
+        {
+          "text": "Pitons and Beans",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_PitonAndBeans"
+        },
+        {
+          "text": "Roach Mode",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_RoachMode"
+        },
+        {
+          "text": "Survival Mode",
+          "weight": 1.0,
+          "enabled": false,
+          "trinket": "Binding_Survival"
+        },
+        {
+          "text": "Weakened Arms",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Binding_WeakArms"
+        }
+      ]
+    },
+    {
+      "id": "trinket",
+      "title": "Trinket",
+      "spins": "1",
+      "unique": true,
+      "entries": [
+        {
+          "text": "No Trinket",
+          "weight": 1.0,
+          "enabled": false
+        },
+        {
+          "text": "Calming Buddy",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_CalmingBuddy"
+        },
+        {
+          "text": "Carabiner",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_Carabiner"
+        },
+        {
+          "text": "Chalk",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_Chalk"
+        },
+        {
+          "text": "Climbing Shoes",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_ClimbingShoes"
+        },
+        {
+          "text": "Employee ID",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_EmployeeID"
+        },
+        {
+          "text": "Extra Pouch",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_Pouch"
+        },
+        {
+          "text": "Gold Nugget",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_GoldNugget"
+        },
+        {
+          "text": "Head Lamp",
+          "weight": 1.0,
+          "enabled": false,
+          "trinket": "Trinket_Headlamp"
+        },
+        {
+          "text": "Helmet",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_Helmet"
+        },
+        {
+          "text": "Mass Damper",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_MassDamper"
+        },
+        {
+          "text": "The Beta",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_Beta"
+        },
+        {
+          "text": "Vial of Moon Rocks",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_MoonRock"
+        },
+        {
+          "text": "Yearning Photo",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_PhotoOfHome"
+        },
+        {
+          "text": "Larger Pack",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_BagExpander"
+        }
+      ]
+    },
+    {
+      "id": "chimney",
+      "title": "Chimney?",
+      "spins": "1",
+      "unique": true,
+      "entries": [
+        {
+          "text": "Chimney",
+          "weight": 1.0,
+          "enabled": true,
+          "route": [
+            "chimney"
+          ],
+          "note": "Chimney it is! Press Play and the run starts in the Chimney. One loop, then the campaign run."
+        },
+        {
+          "text": "No Chimney",
+          "weight": 1000.0,
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
