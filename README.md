@@ -46,7 +46,7 @@ The wheels themselves are stored in `BepInEx/config/senkodev.whiteknuckle.wheelo
 You will need the .NET SDK and the game with [BepInEx](https://old.thunderstore.io/c/white-knuckle/p/BepInEx/BepInExPack/) **already installed**.
 
 ```
-dotnet build src/BloodbugMode.csproj -c Release
+dotnet build src/WheelOfWuck.csproj -c Release
 ```
 
 This also copies the mod into your r2modman profile. If your game and/or profile are somewhere else, copy `LocalPaths.props.example` to `LocalPaths.props` and put your paths in there. Add `-p:Deploy=false` if you only want to build the mod.
