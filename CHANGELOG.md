@@ -4,7 +4,9 @@
 
 - Add new Sink > Diver (on by default), Sink > Ladder and Chute > Ladder routes, off by default (turn them on in the wheel's settings)
 - Dropped custom .json config support
-- Add Iron Knuckle, Hard Mode + Iron Knuckle and Competitive to the Difficulty wheel, off by default
+- Added Iron Knuckle, Hard Mode + Iron Knuckle and Competitive modes, off by default
+- Prevent the wheel from offering campaign route options for Endless runs
+- Prevent "No Shops" and "No Perks" bindings from showing up in the Iron Knuckle and HMIK mode
 
 ## 1.1.1
 

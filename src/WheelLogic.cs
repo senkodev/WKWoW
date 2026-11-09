@@ -68,13 +68,67 @@ namespace WheelOfWuck
 
         static readonly List<string> shortcuts = new List<string> { "sink", "chute", "duct", "ladder", "diver" };
 
+        public static bool Campaign(M_Gamemode mode)
+        {
+            string name = mode.gamemodeName;
+            if (Utils.Same(name, "Campaign")) return true;
+            return false;
+        }
+
+        public static bool Offered(WheelDef wheel, M_Gamemode mode)
+        {
+            if (wheel.campaign)
+            {
+                if (!Campaign(mode)) return false;
+            }
+            return true;
+        }
+
+        public static bool Offered(EntryDef entry, M_Gamemode mode)
+        {
+            bool campaign = Campaign(mode);
+            if (entry.route != null)
+            {
+                if (campaign == false) return false;
+            }
+            if (!string.IsNullOrEmpty(entry.trinket))
+            {
+                Trinket t = RunSetup.FindTrinket(mode, entry.trinket);
+                if (t == null) return false;
+            }
+            if (entry.settings == null) return true;
+            foreach (var wanted in entry.settings)
+            {
+                if (!wanted.Value) continue;
+                GamemodeSetting s = RunSetup.FindSetting(mode, wanted.Key);
+                if (s == null) return false;
+                if (Allowed(mode, wanted.Key) == false) return false;
+            }
+            return true;
+        }
+
+        static bool Allowed(M_Gamemode mode, string setting)
+        {
+            bool ok = true;
+            if (setting == "hardmode") ok = mode.allowHardmode;
+            else if (setting == "ironknuckle") ok = mode.allowIronKnuckle;
+            else if (setting == "competitive") ok = mode.allowCompetitive;
+            return ok;
+        }
+
         public static List<EntryDef> Live(WheelDef wheel, M_Gamemode mode)
         {
             var live = new List<EntryDef>();
+            if (!Offered(wheel, mode))
+            {
+                //Debug.Log(wheel.id + " not in " + mode.gamemodeName);
+                return live;
+            }
             int slack = Slack(mode);
             foreach (EntryDef entry in wheel.entries)
             {
                 if (WheelPicks.IsEnabled(wheel, entry) == false || entry.weight <= 0f) continue;
+                if (!Offered(entry, mode)) continue;
                 if (wheel.unique && wins.Any(w => w.wheel == wheel && w.entry == entry)) continue;
                 if (entry.route != null && Rolled("ironknuckle") && entry.route.Exists(shortcuts.Contains))
                 {
@@ -88,6 +142,17 @@ namespace WheelOfWuck
                     {
                         Plugin.Logger.LogInfo($"{entry.text} stays off the {wheel.title} wheel: the game doesn't allow it with the rolled difficulty");
                         continue;
+                    }
+                    if (t != null && Rolled("ironknuckle"))
+                    {
+                        bool gone = false;
+                        if (!t.isBinding) gone = true;
+                        if (Utils.Same(t.name, "Binding_NoShops")) gone = true;
+                        if (gone)
+                        {
+                            Plugin.Logger.LogInfo($"{entry.text} stays off the {wheel.title} wheel due to iron knuckle enabled");
+                            continue;
+                        }
                     }
                     if (t != null && !t.isBinding && slack - t.cost < 0)
                     {
@@ -121,6 +186,7 @@ namespace WheelOfWuck
                     GamemodeSetting setting = RunSetup.FindSetting(mode, wanted.Key);
                     if (setting == null) return $"{mode.gamemodeName} has no setting called {wanted.Key}";
                     if (wanted.Value && !RunSetup.SettingUnlocked(setting)) return $"{setting.title} is not unlocked yet";
+                    if (wanted.Value && !Allowed(mode, wanted.Key)) return $"{setting.title} can't be used in {mode.gamemodeName.Trim()}";
                 }
             }
             if (entry.route != null)

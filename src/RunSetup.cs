@@ -121,6 +121,7 @@ namespace WheelOfWuck
                     roll.chimneySettings = new List<string>(save.GetGameMode(chimneyName).activeSettings);
                 }
             }
+            didRevert = true;
             roll.ResetProgress();
             Roll.Current = roll;
             roll.Save();
@@ -216,6 +217,7 @@ namespace WheelOfWuck
 
         public static Trinket FindTrinket(M_Gamemode mode, string name)
         {
+            if (mode.availableTrinkets == null) return null;
             List<Trinket> all = new List<Trinket>(mode.availableTrinkets.trinkets);
             all.AddRange(mode.availableTrinkets.bindings);
             return all.Find(t => Utils.Same(t.name, name) || Utils.Same(t.title, name));

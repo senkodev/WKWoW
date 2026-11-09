@@ -225,6 +225,14 @@ namespace WheelOfWuck
             });
         }
 
+        bool HasLast()
+        {
+            Roll last = Roll.Current;
+            if (last == null) return false;
+            if (!Utils.Same(last.gamemode, mode.gamemodeName)) return false;
+            return true;
+        }
+
         IEnumerator Run()
         {
             while (true)
@@ -233,8 +241,9 @@ namespace WheelOfWuck
                 useLast = false;
                 WheelLogic.wins.Clear();
                 results = new List<WheelResult>();
-                previewLast = Roll.Current != null && !wasReset;
-                lastButton.gameObject.SetActive(Roll.Current != null);
+                bool hasLast = HasLast();
+                previewLast = hasLast && !wasReset;
+                lastButton.gameObject.SetActive(hasLast);
                 resetButton.gameObject.SetActive(false);
                 settingsButton.gameObject.SetActive(true);
                 wheelGroup.gameObject.SetActive(true);
@@ -243,6 +252,7 @@ namespace WheelOfWuck
 
                 foreach (WheelDef wheelDef in set.wheels)
                 {
+                    if (!WheelLogic.Offered(wheelDef, mode)) continue;
                     int spins = WheelLogic.Spins(wheelDef);
                     var result = new WheelResult { id = wheelDef.id, title = wheelDef.title };
                     for (int spin = 0; spin < spins; spin++)
@@ -386,6 +396,7 @@ namespace WheelOfWuck
             var lines = new List<string>();
             foreach (WheelDef wheelDef in set.wheels)
             {
+                if (!WheelLogic.Offered(wheelDef, mode)) continue;
                 WheelResult result = results.Find(r => r.id == wheelDef.id);
                 WheelResult last = null;
                 if (previewLast) last = Roll.Current.results.Find(r => r.id == wheelDef.id);

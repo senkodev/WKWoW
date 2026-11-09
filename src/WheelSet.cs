@@ -31,6 +31,8 @@ namespace WheelOfWuck
         public string title;
         public string spins = "1";
         public bool unique = true;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool campaign;
         public List<EntryDef> entries = new List<EntryDef>();
     }
 

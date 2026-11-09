@@ -89,6 +89,7 @@
       "title": "Route",
       "spins": "1",
       "unique": true,
+      "campaign": true,
       "entries": [
         {
           "text": "Normal Route",
@@ -379,6 +380,7 @@
       "title": "Chimney?",
       "spins": "1",
       "unique": true,
+      "campaign": true,
       "entries": [
         {
           "text": "Chimney",

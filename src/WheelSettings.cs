@@ -133,6 +133,7 @@ namespace WheelOfWuck
 
             foreach (WheelDef wheel in set.wheels)
             {
+                if (!WheelLogic.Offered(wheel, mode)) continue;
                 TextMeshProUGUI header = WheelUI.Text("Header", content, new Vector2(0f, 34f), Vector2.zero,
                     wheel.title.ToUpperInvariant(), 24f, TextAlignmentOptions.BottomLeft, WheelUI.Orange);
                 header.font = Utils.GetFont("Ticketing SDF GreyGlow");
@@ -149,7 +150,11 @@ namespace WheelOfWuck
                 cells.constraintCount = 4;
                 cells.childAlignment = TextAnchor.UpperLeft;
 
-                foreach (EntryDef entry in wheel.entries) AddRow(grid, wheel, entry);
+                foreach (EntryDef entry in wheel.entries)
+                {
+                    if (WheelLogic.Offered(entry, mode) == false) continue;
+                    AddRow(grid, wheel, entry);
+                }
                 if (wheel.id == "trinket") AddOption(header.transform, "1 trinket per binding + 1 free", Plugin.TrinketPerBinding);
             }
 

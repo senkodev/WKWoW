@@ -155,7 +155,8 @@ namespace WheelOfWuck
         {
             var save = StatManager.saveData;
             var saved = save.GetGameMode(mode.gamemodeName)?.activeSettings ?? new List<string>();
-            var mine = Utils.Same(mode.gamemodeName, "Chimney") ? chimneySettings : activeSettings;
+            var mine = activeSettings;
+            if (Utils.Same(mode.gamemodeName, "Chimney") && !Utils.Same(gamemode, "Chimney")) mine = chimneySettings;
             if (!new HashSet<string>(saved).SetEquals(mine)) return false;
             return new HashSet<string>(save.GetGamemodeTrinkets(mode.GetGamemodeName())).SetEquals(activeTrinkets);
         }
