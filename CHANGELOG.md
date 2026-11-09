@@ -8,6 +8,7 @@
 - Prevent the wheel from offering campaign route options for Endless runs
 - Prevent "No Shops" and "No Perks" bindings from showing up in the Iron Knuckle and HMIK mode
 - Restart the run right at the start if the Ladder was rolled, but none of the Delta Labs rooms have the Ladder entrance
+- Skipping a route the wheel picked will now kill you, instead of restarting the run
 
 ## 1.1.1
 

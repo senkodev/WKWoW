@@ -24,12 +24,15 @@ Things the mod can't set for you are left off the wheel - this also includes sho
 
 ## In the run
 
-A small panel in the top right corner shows the roll. Press `F8` to enable/disable the wheel run HUD. Shortcuts turn green when you take them, and red when you take one the wheel didn't pick (off route). If you climb past the entrance of a shortcut the wheel picked, it will turn red too and 5 seconds later the run restarts automatically.
-You can disable this via the `RestartOnSkip` config option.
+### HUD
+
+A small panel in the top right corner shows your roll. Press `F8` to enable/disable the wheel run HUD. Shortcuts turn green when you take them, and red when you take one the wheel didn't pick (off route). If you climb past the entrance of a shortcut the wheel picked, it will turn red too, and 5 seconds later **the game kills you**. You can disable this via the `RestartOnSkip` config option.
 
 Some rolls are more than one run! Ladder + Hot Zone means that you have to beat the game in the Ladder first (by either looping once and dying, or exiting through the vent after one loop), then start over and go through the Hot Zone.
 
-Chimney: Chimney starts first with the rolled bindings and trinkets. After every loop a prompt asks whether to keep climbing (`F3`) or end the run there (`F6`), which is a normal death so the Chimney's run is properly submitted to the leaderboard. Restart on that screen then starts the campaign run, however dying before the first loop means the Chimney run was not successful.
+### Chimney
+
+Chimney starts first with the rolled bindings and trinkets. After every loop a prompt asks whether to keep climbing (`F3`) or end the run there (`F6`), which is a normal death so the Chimney's run is properly submitted to the leaderboard. Restart on that screen then starts the campaign run, however dying before the first loop means the Chimney run was not successful.
 
 Restarting the game puts the trinkets and bindings back the way they were before the wheel roll.
 
@@ -51,13 +54,15 @@ dotnet build src/WheelOfWuck.csproj -c Release
 
 This also copies the mod into your r2modman profile. If your game and/or profile are somewhere else, copy `LocalPaths.props.example` to `LocalPaths.props` and put your paths in there. Add `-p:Deploy=false` if you only want to build the mod.
 
-The wheels are in the `src/wheels.json` file. It is built into the dll, so rebuild after changing it.
+The wheels are in the `src/wheels.json` file. It is built into the dll, so always rebuild the mod after changing it.
 
 `tools/package.ps1` makes the zip package for the Thunderstore listing.
 
 ## Dedicated to
 
 This mod is dedicated to **Sckurge**, who you can find on [Twitch](https://www.twitch.tv/sckurge) and [YouTube](https://www.youtube.com/@SckurgeWK). He is also the author of the original wheel which was used for this mod! :D
+
+You can find his first playthrough of the mod on YouTube
 
 ## Credits
 

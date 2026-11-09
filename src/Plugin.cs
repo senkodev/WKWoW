@@ -53,7 +53,7 @@ namespace WheelOfWuck
             ChimneyStayKey = Config.Bind("General", "ChimneyStayKey", KeyCode.F3, "A binding key to continue the Chimney run after a loop.");
             ChimneyGoKey = Config.Bind("General", "ChimneyGoKey", KeyCode.F6, "A binding key to end the run after a loop of the Chimney, so the run is properly submitted to the leaderboard.");
             RestartOnSkip = Config.Bind("General.Toggles", "RestartOnSkip", true,
-                "Restart the run as soon as a shortcut the wheel picked can't be reached any more.");
+                "Whether to kill the player as soon as a route the wheel picked can't be reached any more.");
             TrinketPerBinding = Config.Bind("General.Toggles", "TrinketPerBinding", true,
                 "Whether to spin the trinket wheel once per rolled binding + 1 free (so 3 bindings gives 4 trinkets).");
 

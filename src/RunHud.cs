@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Febucci.UI;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
@@ -14,7 +15,8 @@ namespace WheelOfWuck
         GameObject canvas;
         GameObject notice;
         CanvasGroup noticeGroup;
-        bool restarting;
+        // bool restarting;
+        bool killing;
         int asked;
         bool inLoopRoom;
         bool asking;
@@ -95,7 +97,7 @@ namespace WheelOfWuck
             }
 
             if (wheelRun) Track(roll);
-            if (notice != null && asked == 0 && noticeGroup != null && noticeGroup.alpha > 0.9f && !restarting)
+            if (notice != null && asked == 0 && noticeGroup != null && noticeGroup.alpha > 0.9f && !killing)
             {
                 if (Input.GetKeyDown(Plugin.ChimneyStayKey.Value)) asked = 1;
                 if (Input.GetKeyDown(Plugin.ChimneyGoKey.Value)) asked = 2;
@@ -275,8 +277,8 @@ namespace WheelOfWuck
                 names = names + Roll.Label(keys[i]);
             }
             Plugin.Logger.LogInfo($"skipped the {names}");
-            if (!Plugin.RestartOnSkip.Value || restarting) return;
-            StartCoroutine(Restart(names));
+            if (!Plugin.RestartOnSkip.Value || killing) return;
+            StartCoroutine(Kill(roll, keys, names));
         }
 
         static readonly List<string> ladderLabs = new List<string>
@@ -322,7 +324,7 @@ namespace WheelOfWuck
             roll.skipped.Add("ladder");
             roll.Save();
             Plugin.Logger.LogInfo("no room with the ladder in this run's delta lab");
-            if (!Plugin.RestartOnSkip.Value || restarting) return;
+            if (!Plugin.RestartOnSkip.Value || killing) return;
             LadderRestart();
         }
 
@@ -335,24 +337,39 @@ namespace WheelOfWuck
             CL_GameManager.ChangeState("restart");
         }
 
-        IEnumerator Restart(string names)
+        IEnumerator Kill(Roll roll, List<string> keys, string names)
         {
-            restarting = true;
-            Notice("YOU SKIPPED THE " + names.ToUpperInvariant() + "." + "\n" + "<size=60%>The wheel restarts the run.</size>");
+            killing = true;
+            string message = "YOU SKIPPED THE " + names.ToUpperInvariant() + "." + "\n" + "<size=60%><shake>The wheel will now kill you.</shake></size>";
+            Notice(message);
+            TMP_Text label = notice.GetComponentInChildren<TMP_Text>();
+            TextAnimator_TMP fontShaker = label.gameObject.AddComponent<TextAnimator_TMP>();
+            fontShaker.timeScale = TimeScale.Unscaled;
+            fontShaker.referenceFontSize = label.fontSize;
+            fontShaker.SetText(message);
             yield return Fade(0f, 1f, 0.5f);
             yield return new WaitForSecondsRealtime(3.7f);
             yield return Fade(1f, 0f, 0.8f);
-            if (CL_GameManager.gMan != null && CL_GameManager.IsInGame())
-            {
-                Plugin.Logger.LogInfo("restarting the run");
-                AccessTools.Method(typeof(CL_SaveManager), "DeleteSessionSave")
-                    .Invoke(null, new object[] { CL_GameManager.GetGamemodeName(false, true), CL_GameManager.IsHardmode() });
-                CL_SaveManager.isSavedRun = false;
-                CL_GameManager.ChangeState("restart");
-            }
-            yield return new WaitForSecondsRealtime(1.5f);
             if (notice != null) Destroy(notice);
-            restarting = false;
+
+            bool revived = false;
+            if (CL_GameManager.gMan != null && CL_GameManager.IsInGame() && ENT_Player.playerObject != null)
+            {
+                Plugin.Logger.LogInfo("killing the player due to a skipped route");
+                ENT_Player.playerObject.Kill("", null);
+                while (CL_GameManager.gMan != null && CL_GameManager.gMan.IsReviving())
+                {
+                    revived = true;
+                    yield return null;
+                }
+            }
+            if (revived)
+            {
+                for (int i = 0; i < keys.Count; i++) roll.skipped.Remove(keys[i]);
+                roll.Save();
+                Plugin.Logger.LogInfo("revived from a save, the " + names + " can be taken again");
+            }
+            killing = false;
         }
 
         IEnumerator Fade(float from, float to, float seconds)
