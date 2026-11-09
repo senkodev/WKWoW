@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\package\wheels.json" LogicalName="wheels.json" />
+    <EmbeddedResource Include="wheels.json" LogicalName="wheels.json" />
   </ItemGroup>
 
   <Target Name="DeployPlugin" AfterTargets="Build" Condition="'$(Deploy)' == 'true'">

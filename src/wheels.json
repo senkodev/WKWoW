@@ -54,6 +54,33 @@
           "route": [
             "hotzone"
           ]
+        },
+        {
+          "text": "Iron Knuckle",
+          "weight": 1.0,
+          "enabled": false,
+          "settings": {
+            "hardmode": false,
+            "ironknuckle": true
+          }
+        },
+        {
+          "text": "Hard Mode + Iron Knuckle",
+          "weight": 1.0,
+          "enabled": false,
+          "settings": {
+            "hardmode": true,
+            "ironknuckle": true
+          }
+        },
+        {
+          "text": "Competitive",
+          "weight": 1.0,
+          "enabled": false,
+          "settings": {
+            "hardmode": false,
+            "competitive": true
+          }
         }
       ]
     },
@@ -86,14 +113,6 @@
           ]
         },
         {
-          "text": "Ladder",
-          "weight": 0.56,
-          "enabled": true,
-          "route": [
-            "ladder"
-          ]
-        },
-        {
           "text": "Duct",
           "weight": 1.0,
           "enabled": true,
@@ -119,12 +138,47 @@
           ]
         },
         {
+          "text": "Sink > Diver",
+          "weight": 1.0,
+          "enabled": true,
+          "route": [
+            "sink",
+            "diver"
+          ]
+        },
+        {
           "text": "Chute > Diver",
           "weight": 1.0,
           "enabled": true,
           "route": [
             "chute",
             "diver"
+          ]
+        },
+        {
+          "text": "Ladder",
+          "weight": 0.56,
+          "enabled": true,
+          "route": [
+            "ladder"
+          ]
+        },
+        {
+          "text": "Sink > Ladder",
+          "weight": 0.56,
+          "enabled": false,
+          "route": [
+            "sink",
+            "ladder"
+          ]
+        },
+        {
+          "text": "Chute > Ladder",
+          "weight": 0.56,
+          "enabled": false,
+          "route": [
+            "chute",
+            "ladder"
           ]
         }
       ]

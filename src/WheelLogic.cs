@@ -54,6 +54,20 @@ namespace WheelOfWuck
             return slack;
         }
 
+        public static bool Rolled(string setting)
+        {
+            bool on = false;
+            for (int i = 0; i < wins.Count; i++)
+            {
+                if (wins[i].entry.settings == null) continue;
+                bool value;
+                if (wins[i].entry.settings.TryGetValue(setting, out value)) on = value;
+            }
+            return on;
+        }
+
+        static readonly List<string> shortcuts = new List<string> { "sink", "chute", "duct", "ladder", "diver" };
+
         public static List<EntryDef> Live(WheelDef wheel, M_Gamemode mode)
         {
             var live = new List<EntryDef>();
@@ -62,9 +76,19 @@ namespace WheelOfWuck
             {
                 if (WheelPicks.IsEnabled(wheel, entry) == false || entry.weight <= 0f) continue;
                 if (wheel.unique && wins.Any(w => w.wheel == wheel && w.entry == entry)) continue;
+                if (entry.route != null && Rolled("ironknuckle") && entry.route.Exists(shortcuts.Contains))
+                {
+                    Plugin.Logger.LogInfo($"{entry.text} stays off the {wheel.title} wheel: no shortcuts in Iron Knuckle");
+                    continue;
+                }
                 if (!string.IsNullOrEmpty(entry.trinket))
                 {
                     Trinket t = RunSetup.FindTrinket(mode, entry.trinket);
+                    if (t != null && t.settingBlacklist.Exists(Rolled))
+                    {
+                        Plugin.Logger.LogInfo($"{entry.text} stays off the {wheel.title} wheel: the game doesn't allow it with the rolled difficulty");
+                        continue;
+                    }
                     if (t != null && !t.isBinding && slack - t.cost < 0)
                     {
                         Plugin.Logger.LogInfo($"{entry.text} stays off the {wheel.title} wheel: not enough bindings to afford it");

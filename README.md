@@ -16,7 +16,7 @@ Manual install: install [BepInEx 5](https://thunderstore.io/c/white-knuckle/p/Be
 
 - Go to Campaign, press Play and there will be a **Wheel** button next to Play on the new game screen (also on the screen after you die)
 - Spin through the wheels. **Cancel** leaves everything as it was, **Last roll** takes the previous roll again, **Reset** starts over from the first wheel (and resets the last roll)
-- **Settings** (before the first spin) lets you enable/disable what can land on each wheel. The wheels file is the default, locked stuff (like shortcuts) is greyed out
+- **Settings** (before the first spin) lets you enable/disable what can land on each wheel. Locked stuff (like shortcuts) is greyed out
 - When the last wheel is done, the mod selects all the options you rolled in the in-game menu and you're all good to go
 - The route and the Hot Zone are yours to take, the mod only tells you which. Chimney means the run starts in the Chimney first (see below)
 
@@ -41,8 +41,6 @@ In the `BepInEx/config/senkodev.whiteknuckle.wheelofwuck.cfg` file and in the Mo
 
 `TrinketPerBinding` is on by default, and can be unticked in the wheel's settings. When it is on, the trinket wheel spins once per rolled binding + 1 free, so 3 bindings give 4 trinkets. Turn it off to always roll a single trinket.
 
-The wheels themselves are stored in `BepInEx/config/senkodev.whiteknuckle.wheelofwuck.wheels.json` (entries, weights, which ones are on by default). You can also delete the file to get the original file back.
-
 ## Building
 
 You will need the .NET SDK and the game with [BepInEx](https://old.thunderstore.io/c/white-knuckle/p/BepInEx/BepInExPack/) **already installed**.
@@ -52,6 +50,8 @@ dotnet build src/WheelOfWuck.csproj -c Release
 ```
 
 This also copies the mod into your r2modman profile. If your game and/or profile are somewhere else, copy `LocalPaths.props.example` to `LocalPaths.props` and put your paths in there. Add `-p:Deploy=false` if you only want to build the mod.
+
+The wheels are in the `src/wheels.json` file. It is built into the dll, so rebuild after changing it.
 
 `tools/package.ps1` makes the zip package for the Thunderstore listing.
 
