@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Re-release due to a Thunderstore update issue
+
 ## 1.2.0
 
 - Add new Sink > Diver (on by default), Sink > Ladder and Chute > Ladder routes, off by default (turn them on in the wheel's settings)
