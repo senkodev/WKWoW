@@ -10,7 +10,7 @@ namespace WheelOfWuck
     {
         public const string PLUGIN_GUID = "senkodev.whiteknuckle.wheelofwuck";
         public const string PLUGIN_NAME = "WheelOfWuck";
-        public const string PLUGIN_VERSION = "1.1.1";
+        public const string PLUGIN_VERSION = "1.2.0";
     }
 
     public enum HudCorner
