@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- Fixes random crashes caused by the new UI
+
 ## 1.1.0
 
 - Added the `TrinketPerBinding` option: the trinket wheel spins once per rolled binding + 1 free (3 bindings = 4 trinkets). On by default, can be unticked under Trinket in the wheel's Settings panel

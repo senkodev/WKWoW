@@ -121,6 +121,7 @@ namespace WheelOfWuck
 
         void OnDestroy()
         {
+            StopFades(gameObject);
             ClearWheel();
             EventSystem.current?.SetSelectedGameObject(selectedBefore);
             if (Current == this) Current = null;
@@ -343,9 +344,15 @@ namespace WheelOfWuck
             return lerp;
         }
 
+        public static void StopFades(GameObject panel)
+        {
+            foreach (CanvasGroup faded in panel.GetComponentsInChildren<CanvasGroup>(true)) faded.DOKill();
+        }
+
         public static IEnumerator Later(GameObject gone, float seconds)
         {
             yield return new WaitForSecondsRealtime(seconds);
+            StopFades(gone);
             Destroy(gone);
         }
 
