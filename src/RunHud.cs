@@ -213,7 +213,7 @@ namespace WheelOfWuck
             if (notice != null) Destroy(notice);
             if (asked == 2 && CL_GameManager.gMan != null && CL_GameManager.IsInGame() && ENT_Player.playerObject != null)
             {
-                Plugin.Logger.LogInfo("ending the Chimney run so the score counts, Restart goes to the campaign");
+                Plugin.Logger.LogInfo("ending the Chimney run so the score counts, restart goes to the campaign");
                 ENT_Player.playerObject.Kill("", null);
             }
             asked = 0;

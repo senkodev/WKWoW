@@ -6,7 +6,7 @@ Everything the mod sets the new game screen can set too, so all wheel runs still
 
 ## Installing
 
-With r2modman, simply search for `WheelofWuck` and install the mod.
+With r2modman, simply search for `WheelOfWuck` and install the mod.
 
 Got the zip instead? Go to `Settings > Profile > Import local mod`.
 
@@ -29,7 +29,7 @@ You can disable this via the `RestartOnSkip` config option.
 
 Some rolls are more than one run! Ladder + Hot Zone means that you have to beat the game in the Ladder first (by either looping once and dying, or exiting through the vent after one loop), then start over and go through the Hot Zone.
 
-Chimney: Chimney starts first with the rolled bindings and trinkets. After every loop a prompt asks whether to keep climbing (`F3`) or end the run there (`F6`), which is a normal death so the Chimney score is submitted to the leaderboard. Restart on that screen then starts the campaign run. Dying before the first loop means the Chimney run was not successful.
+Chimney: Chimney starts first with the rolled bindings and trinkets. After every loop a prompt asks whether to keep climbing (`F3`) or end the run there (`F6`), which is a normal death so the Chimney's run is properly submitted to the leaderboard. Restart on that screen then starts the campaign run, however dying before the first loop means the Chimney run was not successful.
 
 Restarting the game puts the trinkets and bindings back the way they were before the wheel roll.
 
@@ -37,7 +37,9 @@ Every finished wheel run is written to `BepInEx/config/senkodev.whiteknuckle.whe
 
 ## Settings
 
-In the `BepInEx/config/senkodev.whiteknuckle.wheelofwuck.cfg` file and in the Mod Menu the following settings are available: `HudKey`, `ShowHud`, `HudPosition`, `HudScale`, `TickVolume`, `RestartOnSkip`, `ChimneyStayKey`, `ChimneyGoKey`.
+In the `BepInEx/config/senkodev.whiteknuckle.wheelofwuck.cfg` file and in the Mod Menu the following settings are available: `HudKey`, `ShowHud`, `HudPosition`, `HudScale`, `TickVolume`, `RestartOnSkip`, `TrinketPerBinding`, `ChimneyStayKey`, `ChimneyGoKey`.
+
+`TrinketPerBinding` is on by default, and can be unticked in the wheel's settings. When it is on, the trinket wheel spins once per rolled binding + 1 free, so 3 bindings give 4 trinkets. Turn it off to always roll a single trinket.
 
 The wheels themselves are stored in `BepInEx/config/senkodev.whiteknuckle.wheelofwuck.wheels.json` (entries, weights, which ones are on by default). You can also delete the file to get the original file back.
 
@@ -62,5 +64,7 @@ This mod is dedicated to **Sckurge**, who you can find on [Twitch](https://www.t
 - **Dark Machine Games** for White Knuckle
 - The [BepInEx](https://github.com/BepInEx/BepInEx) and [HarmonyX](https://github.com/BepInEx/HarmonyX) teams for the mod loader and patching
 - **sinai-dev** and **yukiaiji** for [UnityExplorer](https://github.com/yukieiji/UnityExplorer)
-- The idea and the wheel options for the mod were taken from the **Wheel of Wuck**, which was made by **Sckurge**.
+- The idea and the wheel options for the mod were taken from the **Wheel of Wuck**, which was made by **Sckurge**
 - Code, icons, design and testing are by [senkodev](https://senko.dev)
+
+If you can design a better icon for the mod, please contact me through Discord (senkodev) or [Telegram](https://t.me/senkodev) 🥹

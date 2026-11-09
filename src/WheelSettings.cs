@@ -19,6 +19,8 @@ namespace WheelOfWuck
         M_Gamemode mode;
         Action onClose;
         public List<Toggle> toggles = new List<Toggle>();
+        public List<Toggle> options = new List<Toggle>();
+        List<BepInEx.Configuration.ConfigEntry<bool>> optionEntries = new List<BepInEx.Configuration.ConfigEntry<bool>>();
         public List<(WheelDef wheel, EntryDef entry)> rows = new List<(WheelDef, EntryDef)>();
         bool _built;
         AudioClip tickOn;
@@ -61,6 +63,13 @@ namespace WheelOfWuck
                 Toggle tg = toggles[i];
                 tg.SetIsOnWithoutNotify(def);
                 Tint(tg, def);
+            }
+            for (int i = 0; i < options.Count; i++)
+            {
+                bool def = (bool)optionEntries[i].DefaultValue;
+                optionEntries[i].Value = def;
+                options[i].SetIsOnWithoutNotify(def);
+                Tint(options[i], def);
             }
         }
 
@@ -129,6 +138,7 @@ namespace WheelOfWuck
                 cells.childAlignment = TextAnchor.UpperLeft;
 
                 foreach (EntryDef entry in wheel.entries) AddRow(grid, wheel, entry);
+                if (wheel.id == "trinket") AddOption(header.transform, "One trinket per binding + 1 free", Plugin.TrinketPerBinding);
             }
 
             Vector2 buttonRow = new Vector2(0f, -920f / 2f + 44f);
@@ -136,19 +146,19 @@ namespace WheelOfWuck
             WheelUI.Button("Done", panel, new Vector2(170f, 48f), buttonRow + new Vector2(100f, 0f), "DONE", Close);
         }
 
-        void AddRow(Transform parent, WheelDef wheel, EntryDef entry)
+        Toggle MakeTick(Transform parent, string text, out Image box, out Image check, out TextMeshProUGUI label)
         {
             RectTransform cell = WheelUI.Rect("Entry", parent, Vector2.zero, Vector2.zero);
             Image hit = cell.gameObject.AddComponent<Image>();
             hit.color = Color.clear;
 
             Vector2 left = new Vector2(0f, 0.5f);
-            Image box = WheelUI.Image("Box", cell, new Vector2(26f, 26f), new Vector2(6f, 0f), Box, Utils.GetSprite("window_outline_02"), left, left);
+            box = WheelUI.Image("Box", cell, new Vector2(26f, 26f), new Vector2(6f, 0f), Box, Utils.GetSprite("window_outline_02"), left, left);
             box.type = Image.Type.Sliced;
             box.pixelsPerUnitMultiplier = 0.5f;
-            Image check = WheelUI.Image("Check", box.transform, new Vector2(30f, 30f), Vector2.zero, WheelUI.Orange, Utils.GetSprite("window_X_02"));
+            check = WheelUI.Image("Check", box.transform, new Vector2(30f, 30f), Vector2.zero, WheelUI.Orange, Utils.GetSprite("window_X_02"));
 
-            TextMeshProUGUI label = WheelUI.Text("Label", cell, Vector2.zero, Vector2.zero, entry.text, 20f, TextAlignmentOptions.MidlineLeft, WheelUI.Ink);
+            label = WheelUI.Text("Label", cell, Vector2.zero, Vector2.zero, text, 20f, TextAlignmentOptions.MidlineLeft, WheelUI.Ink);
             label.font = Utils.GetFont("Ticketing SDF");
             label.rectTransform.anchorMin = Vector2.zero;
             label.rectTransform.anchorMax = Vector2.one;
@@ -172,6 +182,41 @@ namespace WheelOfWuck
             colors.selectedColor = Color.white;
             colors.disabledColor = Utils.Hex("#7D7D7D80");
             toggle.colors = colors;
+            return toggle;
+        }
+
+        void AddOption(Transform parent, string text, BepInEx.Configuration.ConfigEntry<bool> entry)
+        {
+            Image box;
+            Image check;
+            TextMeshProUGUI label;
+            Toggle toggle = MakeTick(parent, text, out box, out check, out label);
+            RectTransform spot = (RectTransform)toggle.transform;
+            spot.anchorMin = new Vector2(1f, 0f);
+            spot.anchorMax = new Vector2(1f, 0f);
+            spot.pivot = new Vector2(1f, 0f);
+            spot.sizeDelta = new Vector2(300f, 30f);
+            spot.anchoredPosition = new Vector2(0f, 3f);
+            spot.localScale = new Vector3(0.8f, 0.8f, 1f);
+            toggle.SetIsOnWithoutNotify(entry.Value);
+            Tint(toggle, entry.Value);
+            toggle.onValueChanged.AddListener(value =>
+            {
+                entry.Value = value;
+                Tint(toggle, value);
+                AudioClip clip = value ? tickOn : tickOff;
+                if (clip != null) AudioManager.PlayUISound(clip, 0.8f);
+            });
+            options.Add(toggle);
+            optionEntries.Add(entry);
+        }
+
+        void AddRow(Transform parent, WheelDef wheel, EntryDef entry)
+        {
+            Image box;
+            Image check;
+            TextMeshProUGUI label;
+            Toggle toggle = MakeTick(parent, entry.text, out box, out check, out label);
             bool on = WheelPicks.IsEnabled(wheel, entry);
             toggle.SetIsOnWithoutNotify(on);
 

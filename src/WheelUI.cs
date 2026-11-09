@@ -226,7 +226,7 @@ namespace WheelOfWuck
 
                 foreach (WheelDef wheelDef in set.wheels)
                 {
-                    int spins = WheelLogic.SpinsFor(wheelDef);
+                    int spins = WheelLogic.Spins(wheelDef);
                     var result = new WheelResult { id = wheelDef.id, title = wheelDef.title };
                     for (int spin = 0; spin < spins; spin++)
                     {

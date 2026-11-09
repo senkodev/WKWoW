@@ -35,6 +35,7 @@ namespace WheelOfWuck
         public static ConfigEntry<float> HudScale;
         public static ConfigEntry<float> TickVolume;
         public static ConfigEntry<bool> RestartOnSkip;
+        public static ConfigEntry<bool> TrinketPerBinding;
         public static ConfigEntry<KeyCode> ChimneyStayKey;
         public static ConfigEntry<KeyCode> ChimneyGoKey;
 
@@ -42,17 +43,19 @@ namespace WheelOfWuck
         {
             Logger = base.Logger; Instance = this;
 
-            HudKey = Config.Bind("General", "HudKey", KeyCode.F8, "Shows or hides the panel during a wheel run.");
-            ShowHud = Config.Bind("General", "ShowHud", true, "Show the wheel results during the run.");
-            HudPosition = Config.Bind("General", "HudPosition", HudCorner.TopRight, "Corner of the screen for the results.");
+            HudKey = Config.Bind("General", "HudKey", KeyCode.F8, "A binding key to show or hide the panel during a wheel run.");
+            ShowHud = Config.Bind("General", "ShowHud", true, "Whether to show the wheel results during the run.");
+            HudPosition = Config.Bind("General", "HudPosition", HudCorner.TopRight, "Which corner of the screen to use for the results.");
             HudScale = Config.Bind("General", "HudScale", 0.75f,
                 new ConfigDescription("Size of the results panel.", new AcceptableValueRange<float>(0.5f, 1f)));
             TickVolume = Config.Bind("General", "TickVolume", 0.6f,
                 new ConfigDescription("Volume of the ticking when the wheel spins.", new AcceptableValueRange<float>(0f, 1f)));
-            ChimneyStayKey = Config.Bind("General", "ChimneyStayKey", KeyCode.F3, "After a loop of the Chimney: keep climbing.");
-            ChimneyGoKey = Config.Bind("General", "ChimneyGoKey", KeyCode.F6, "After a loop of the Chimney: end the run so the score counts, then Restart goes to the campaign run.");
+            ChimneyStayKey = Config.Bind("General", "ChimneyStayKey", KeyCode.F3, "A binding key to continue the Chimney run after a loop.");
+            ChimneyGoKey = Config.Bind("General", "ChimneyGoKey", KeyCode.F6, "A binding key to end the run after a loop of the Chimney, so the run is properly submitted to the leaderboard.");
             RestartOnSkip = Config.Bind("General.Toggles", "RestartOnSkip", true,
                 "Restart the run as soon as a shortcut the wheel picked can't be reached any more.");
+            TrinketPerBinding = Config.Bind("General.Toggles", "TrinketPerBinding", true,
+                "Whether to spin the trinket wheel once per rolled binding + 1 free (so 3 bindings gives 4 trinkets).");
 
             WheelSet.Load();
             WheelPicks.Load();

@@ -22,6 +22,21 @@ namespace WheelOfWuck
             return count;
         }
 
+        public static int Spins(WheelDef wheel)
+        {
+            int spins = SpinsFor(wheel);
+            if (wheel.id == "trinket" && Plugin.TrinketPerBinding.Value)
+            {
+                int bindings = 0;
+                for (int i = 0; i < wins.Count; i++)
+                {
+                    if (wins[i].wheel.id == "bindings") bindings++;
+                }
+                spins = bindings + 1;
+            }
+            return spins;
+        }
+
         public static int Slack(M_Gamemode mode)
         {
             int slack = 1;
