@@ -86,6 +86,7 @@ namespace WheelOfWuck
 
         void OnDestroy()
         {
+            WheelUI.StopFades(gameObject);
             if (Current == this) Current = null;
         }
 
