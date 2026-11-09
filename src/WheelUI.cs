@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Febucci.UI;
 using Febucci.UI.Core;
 using TMPro;
@@ -58,6 +59,9 @@ namespace WheelOfWuck
         Sprite highlight;
         int lastSlice;
         float pointerKick;
+        UI_LerpOpen window;
+        UI_LerpOpen winnerLerp;
+        bool closing;
         float pointerReturn = 160f;
         float lastDegrees;
         float lastDegreesTime;
@@ -105,6 +109,7 @@ namespace WheelOfWuck
         void Start()
         {
             Build();
+            window.Show();
             selectedBefore = EventSystem.current.currentSelectedGameObject;
             foreach (AudioClip clip in Resources.FindObjectsOfTypeAll<AudioClip>())
             {
@@ -123,12 +128,14 @@ namespace WheelOfWuck
 
         public void Back()
         {
+            if (closing) return;
             if (WheelSettings.IsOpen) WheelSettings.Current.Close();
             else Cancel();
         }
 
         void Update()
         {
+            if (closing) return;
             if (Input.GetKeyDown(KeyCode.Escape)) Back();
             if (EventSystem.current.currentSelectedGameObject != null)
                 EventSystem.current.SetSelectedGameObject(null);
@@ -142,12 +149,19 @@ namespace WheelOfWuck
             Vector2 bottom = new Vector2(0.5f, 0f);
             int pad = 12;
 
-            Fill("Dim", transform, new Color(0.02f, 0.02f, 0.03f, 0.92f)).raycastTarget = true;
-            var title = Shaky(Text("Title", transform, new Vector2(1200f, 80f), new Vector2(0f, -10f), "", 56f,
+            RectTransform frame = Rect("Window", transform, Vector2.zero, Vector2.zero);
+            frame.anchorMin = Vector2.zero;
+            frame.anchorMax = Vector2.one;
+            frame.offsetMin = frame.offsetMax = Vector2.zero;
+            Image dim = Fill("Dim", frame, new Color(0.02f, 0.02f, 0.03f, 0.92f));
+            dim.raycastTarget = true;
+            dim.rectTransform.offsetMin = new Vector2(-300f, -200f);
+            dim.rectTransform.offsetMax = new Vector2(300f, 200f);
+            var title = Shaky(Text("Title", frame, new Vector2(1200f, 80f), new Vector2(0f, -10f), "", 56f,
                 TextAlignmentOptions.Center, Ink, top));
             title.SetText(set.title.ToUpperInvariant());
 
-            wheelGroup = Rect("WheelGroup", transform, Vector2.zero, Vector2.zero);
+            wheelGroup = Rect("WheelGroup", frame, Vector2.zero, Vector2.zero);
             wheel = Rect("Wheel", wheelGroup, new Vector2(Radius * 2f, Radius * 2f), WheelCentre);
             wheelImage = wheel.gameObject.AddComponent<Image>();
             wheelImage.raycastTarget = false;
@@ -159,14 +173,14 @@ namespace WheelOfWuck
                 actionPressed = true;
             }, false);
 
-            Transform panel = Panel("Results", transform, PanelSize, PanelCentre, "THE RUN", Magenta, Magenta);
+            Transform panel = Panel("Results", frame, PanelSize, PanelCentre, "THE RUN", Magenta, Magenta);
             resultsText = Text("ResultsText", panel, new Vector2(PanelSize.x - 44f, PanelSize.y - 150f), new Vector2(0f, -62f), "", 22f,
                 TextAlignmentOptions.TopLeft, Ink, top);
             resultsText.font = Utils.GetFont("Ticketing SDF");
             hint = Text("Hint", panel, new Vector2(PanelSize.x - 44f, 60f), new Vector2(0f, 16f), "", 18f, TextAlignmentOptions.Bottom, Dim, bottom);
             hint.font = Utils.GetFont("Ticketing SDF");
 
-            RectTransform row = Rect("Buttons", transform, new Vector2(PanelSize.x, 50f),
+            RectTransform row = Rect("Buttons", frame, new Vector2(PanelSize.x, 50f),
                 new Vector2(PanelCentre.x, PanelCentre.y - PanelSize.y / 2f - 40f));
             HorizontalLayoutGroup layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
             layout.spacing = 16f;
@@ -180,11 +194,13 @@ namespace WheelOfWuck
             settingsButton = Button("Settings", row, new Vector2(136f, 50f), Vector2.zero, "SETTINGS", OpenSettings, false);
             cancelButton = Button("Cancel", row, new Vector2(136f, 50f), Vector2.zero, "CANCEL", Cancel, false);
 
-            RectTransform winner = Rect("Winner", transform, new Vector2(520f, 160f), WheelCentre);
+            RectTransform winner = Rect("Winner", frame, new Vector2(520f, 160f), WheelCentre);
             Panel("Frame", winner, new Vector2(520f, 160f), Vector2.zero, "THE WHEEL SAYS", Red, Red);
             winnerPanel = winner.gameObject;
             winnerText = Shaky(Text("WinnerText", winner, new Vector2(500f, 90f), new Vector2(0f, 12f), "", 40f, TextAlignmentOptions.Center, Ink, bottom));
+            winnerLerp = Lerp(winnerPanel, new Vector3(1f, 0f, 1f), 0f, 0f);
             winnerPanel.SetActive(false);
+            window = Lerp(frame.gameObject, Vector3.one * 0.9f, 0.5f, 0.3f);
         }
 
         static TextAnimator_TMP Shaky(TextMeshProUGUI text)
@@ -268,10 +284,10 @@ namespace WheelOfWuck
                         resetButton.gameObject.SetActive(true);
                         winnerPanel.SetActive(true);
                         winnerText.SetText(winner.text);
-                        yield return PopIn(winnerPanel.transform);
+                        yield return Fold(true);
                         AudioManager.PlayUISound(winClip, 0.8f);
                         yield return WaitForAction("NEXT");
-                        winnerPanel.SetActive(false);
+                        yield return Fold(false);
                         if (resetPressed) break;
                     }
                     if (useLast || resetPressed) break;
@@ -297,13 +313,55 @@ namespace WheelOfWuck
                 yield return WaitForAction("DONE");
                 if (!resetPressed) break;
             }
-            Destroy(gameObject);
+            Close();
         }
 
         void Cancel()
         {
+            if (closing) return;
             Plugin.Logger.LogInfo("wheel cancelled, nothing changed");
-            Destroy(gameObject);
+            Close();
+        }
+
+        public static UI_LerpOpen Lerp(GameObject panel, Vector3 startScale, float fadeIn, float fadeOut)
+        {
+            panel.SetActive(false);
+            panel.AddComponent<CanvasGroup>();
+            UI_LerpOpen lerp = panel.AddComponent<UI_LerpOpen>();
+            lerp.startHidden = true;
+            lerp.startScale = startScale;
+            lerp.scaleLerpTime = 0.2f;
+            lerp.affectPosition = false;
+            lerp.easeIn = Ease.OutCubic;
+            lerp.easeOut = Ease.InCubic;
+            lerp.fadeInCanvasGroup = fadeIn > 0f;
+            lerp.fadeInLerpTime = fadeIn;
+            lerp.fadeOutLerpTime = fadeOut;
+            if (lerp.eventOnShow == null) lerp.eventOnShow = new UnityEngine.Events.UnityEvent();
+            if (lerp.eventOnHide == null) lerp.eventOnHide = new UnityEngine.Events.UnityEvent();
+            panel.SetActive(true);
+            return lerp;
+        }
+
+        public static IEnumerator Later(GameObject gone, float seconds)
+        {
+            yield return new WaitForSecondsRealtime(seconds);
+            Destroy(gone);
+        }
+
+        void Close()
+        {
+            if (closing) return;
+            closing = true;
+            if (Current == this) Current = null;
+            StopAllCoroutines();
+            if (window == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            window.Hide();
+            StartCoroutine(Later(gameObject, 0.3f));
         }
 
         IEnumerator WaitForAction(string label)
@@ -515,14 +573,6 @@ namespace WheelOfWuck
             return a + (b - a) * frac;
         }
 
-        static float Ease(float t)
-        {
-            float pushTime = 0.1f;
-            float pushAmount = 0.05f;
-            if (t < pushTime) return pushAmount * (t / pushTime) * (t / pushTime);
-            return pushAmount + (1f - pushAmount) * (1f - Mathf.Pow(1f - (t - pushTime) / (1f - pushTime), 4f));
-        }
-
         void SetRotation(float degrees)
         {
             wheel.localRotation = Quaternion.Euler(0f, 0f, degrees);
@@ -547,16 +597,12 @@ namespace WheelOfWuck
             lastSlice = slice;
         }
 
-        static IEnumerator PopIn(Transform panel)
+        IEnumerator Fold(bool open)
         {
-            panel.gameObject.SetActive(true);
-            for (float elapsed = 0f; elapsed < 0.25f; elapsed += Time.unscaledDeltaTime)
-            {
-                float u = elapsed / 0.25f - 1f;
-                panel.localScale = Vector3.one * (0.6f + 0.4f * (1f + 2.7f * u * u * u + 1.7f * u * u));
-                yield return null;
-            }
-            panel.localScale = Vector3.one;
+            if (open) winnerLerp.Show();
+            else winnerLerp.Hide();
+            yield return new WaitForSecondsRealtime(0.2f);
+            if (!open) winnerPanel.SetActive(false);
         }
 
         #region ui helpers

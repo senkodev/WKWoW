@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -23,6 +24,9 @@ namespace WheelOfWuck
         List<BepInEx.Configuration.ConfigEntry<bool>> optionEntries = new List<BepInEx.Configuration.ConfigEntry<bool>>();
         public List<(WheelDef wheel, EntryDef entry)> rows = new List<(WheelDef, EntryDef)>();
         bool _built;
+        UI_LerpOpen lerp;
+        bool closing;
+        Coroutine warning;
         AudioClip tickOn;
         AudioClip tickOff;
         TextMeshProUGUI hint;
@@ -44,12 +48,19 @@ namespace WheelOfWuck
             Current.onClose = onClose;
             Current.Build();
             Current._built = true;
+            Current.lerp = WheelUI.Lerp(root.gameObject, new Vector3(0.95f, 0.95f, 1f), 0.5f, 0.5f);
+            Current.lerp.Show();
         }
 
         public void Close()
         {
-            Destroy(gameObject);
+            if (closing) return;
+            closing = true;
+            if (Current == this) Current = null;
             onClose?.Invoke();
+            StopAllCoroutines();
+            lerp.Hide();
+            StartCoroutine(WheelUI.Later(gameObject, 0.5f));
         }
 
         public void Defaults()
@@ -138,7 +149,7 @@ namespace WheelOfWuck
                 cells.childAlignment = TextAnchor.UpperLeft;
 
                 foreach (EntryDef entry in wheel.entries) AddRow(grid, wheel, entry);
-                if (wheel.id == "trinket") AddOption(header.transform, "One trinket per binding + 1 free", Plugin.TrinketPerBinding);
+                if (wheel.id == "trinket") AddOption(header.transform, "1 trinket per binding + 1 free", Plugin.TrinketPerBinding);
             }
 
             Vector2 buttonRow = new Vector2(0f, -920f / 2f + 44f);
@@ -271,8 +282,8 @@ namespace WheelOfWuck
         void Warn(string message)
         {
             if (hint == null) return;
-            StopAllCoroutines();
-            StartCoroutine(WarnFor(message, 2.5f));
+            if (warning != null) StopCoroutine(warning);
+            warning = StartCoroutine(WarnFor(message, 2.5f));
         }
 
         System.Collections.IEnumerator WarnFor(string message, float seconds)
