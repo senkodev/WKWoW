@@ -192,6 +192,8 @@ namespace WheelOfWuck
             }
             inLoopRoom = loopRoom;
 
+            if (roll.Route.Contains("ladder")) CheckLadder(roll);
+
             bool ladderLoop = levelName != null && levelName.StartsWith("M3_Habitation_LadderWarp_Loop") && roll.Route.Contains("ladder");
             if (ladderLoop && roll.ladderLooped == false)
             {
@@ -275,6 +277,62 @@ namespace WheelOfWuck
             Plugin.Logger.LogInfo($"skipped the {names}");
             if (!Plugin.RestartOnSkip.Value || restarting) return;
             StartCoroutine(Restart(names));
+        }
+
+        static readonly List<string> ladderLabs = new List<string>
+        {
+            "M3_Habitation_Lab_01",
+            "M3_Habitation_Lab_03",
+            "M3_Habitation_Lab_05",
+            "M3_Habitation_Lab_07",
+        };
+
+        public static int LadderRooms(WorldLoader.BranchInfo branch)
+        {
+            int labs = 0;
+            int ladders = 0;
+            bool labsDone = false;
+            for (int i = 0; i < branch.levelTracker.Count; i++)
+            {
+                M_Level level = branch.levelTracker[i].GetLevel();
+                if (level == null) return -1;
+                string name = level.levelName;
+                //Debug.Log(i + ": " + name);
+                if (name == "M3_Habitation_Lab_Ending") labsDone = true;
+                if (name.StartsWith("M3_Habitation_Lab_0"))
+                {
+                    labs++;
+                    if (ladderLabs.Contains(name)) ladders++;
+                }
+            }
+            if (labsDone == false || labs == 0) return -1;
+            return ladders;
+        }
+
+        void CheckLadder(Roll roll)
+        {
+            if (roll.visited.Contains("ladder") || roll.skipped.Contains("ladder")) return;
+            WorldLoader.BranchInfo branch = WorldLoader.instance.currentBranch;
+            if (branch == null) return;
+
+            int rooms = LadderRooms(branch);
+            //Debug.Log("ladder rooms: " + rooms);
+            if (rooms != 0) return;
+
+            roll.skipped.Add("ladder");
+            roll.Save();
+            Plugin.Logger.LogInfo("no room with the ladder in this run's delta lab");
+            if (!Plugin.RestartOnSkip.Value || restarting) return;
+            LadderRestart();
+        }
+
+        void LadderRestart()
+        {
+            Plugin.Logger.LogInfo("restarting the run to get the ladder entrance");
+            AccessTools.Method(typeof(CL_SaveManager), "DeleteSessionSave")
+                .Invoke(null, new object[] { CL_GameManager.GetGamemodeName(false, true), CL_GameManager.IsHardmode() });
+            CL_SaveManager.isSavedRun = false;
+            CL_GameManager.ChangeState("restart");
         }
 
         IEnumerator Restart(string names)
