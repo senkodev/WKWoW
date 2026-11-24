@@ -287,6 +287,8 @@ namespace WheelOfWuck
             "M3_Habitation_Lab_03",
             "M3_Habitation_Lab_05",
             "M3_Habitation_Lab_07",
+            "M3_Habitation_Lab_09",
+            "M3_Habitation_Lab_11",
         };
 
         public static int LadderRooms(WorldLoader.BranchInfo branch)

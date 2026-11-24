@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0
+
+- Updated the mod for the Core update
+- Added new ladder entrance rooms
+- Added the new Pulse Pump trinket to the wheel
+
 ## 1.2.1
 
 - Re-release due to a Thunderstore update issue

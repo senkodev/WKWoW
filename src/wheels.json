@@ -372,6 +372,12 @@
           "weight": 1.0,
           "enabled": true,
           "trinket": "Trinket_BagExpander"
+        },
+        {
+          "text": "Pulse Pump",
+          "weight": 1.0,
+          "enabled": true,
+          "trinket": "Trinket_PulsePump"
         }
       ]
     },
